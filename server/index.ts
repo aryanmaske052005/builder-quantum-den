@@ -1,13 +1,14 @@
 import express from "express";
+import dotenv from "dotenv";
+// Load environment variables immediately before other imports
+dotenv.config();
+
 import cors from "cors";
 import multer from "multer";
 import crypto from "crypto";
 import { z } from "zod";
-import dotenv from "dotenv";
 import { zkRouter } from "./routes/zkRoutes";
 import { didRouter } from "./routes/didRoutes";
-
-dotenv.config();
 
 // Configure multer for file uploads
 const upload = multer({

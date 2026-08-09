@@ -35,12 +35,14 @@ alter table verifiable_credentials enable row level security;
 -- add stricter user-facing policies.
 
 -- did_documents: allow all operations
+drop policy if exists "Allow all did_documents operations" on did_documents;
 create policy "Allow all did_documents operations"
 on did_documents for all
 using (true)
 with check (true);
 
 -- verifiable_credentials: allow all operations
+drop policy if exists "Allow all verifiable_credentials operations" on verifiable_credentials;
 create policy "Allow all verifiable_credentials operations"
 on verifiable_credentials for all
 using (true)

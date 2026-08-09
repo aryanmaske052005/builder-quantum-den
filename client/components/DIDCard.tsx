@@ -3,6 +3,7 @@ import { Copy, Download, CheckCircle, Shield, QrCode, Wallet } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useDID } from "../hooks/useDID";
+import { Barcode } from "./Barcode";
 
 export function DIDCard({ didData, vcs }: { didData: any, vcs: any[] }) {
   const [copied, setCopied] = useState(false);
@@ -59,12 +60,18 @@ export function DIDCard({ didData, vcs }: { didData: any, vcs: any[] }) {
       <div className="p-6">
         <div className="mb-6">
           <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">Your DID</p>
-          <div className="flex items-center justify-between bg-slate-100 p-3 rounded-lg border border-slate-200">
+          <div className="flex items-center justify-between bg-slate-100 p-3 rounded-lg border border-slate-200 mb-4">
             <span className="font-mono text-sm text-slate-800 break-all">{truncateDID(didData.did)}</span>
             <Button variant="ghost" size="sm" onClick={handleCopy} className="text-slate-500 hover:text-slate-900 h-8 px-2">
               {copied ? <CheckCircle className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
             </Button>
           </div>
+          
+          <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+            Identity Barcode (Code 128)
+          </p>
+          <Barcode value={didData.did} displayValue={true} height={50} />
         </div>
 
         <div>

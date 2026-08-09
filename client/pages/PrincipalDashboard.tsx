@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Fingerprint } from 'lucide-react';
 
 export default function PrincipalDashboard() {
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const [documents, setDocuments] = useState<any[]>([]);
   const [stats, setStats] = useState({ pending: 0, approvedToday: 0, rejected: 0 });
   const [isLoading, setIsLoading] = useState(true);
@@ -79,7 +79,7 @@ export default function PrincipalDashboard() {
       const expiryDays = Math.max(1, Math.ceil((new Date(expiryDate).getTime() - Date.now()) / 86400000));
       const res = await fetch('/api/did/vc/issue', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id, 'x-user-role': user.role || '' },
+        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id, 'x-user-role': role || '' },
         body: JSON.stringify({ holderUserId: targetUserId, credentialType: 'MarksheetCredential', claims: { docId, status: 'Verified', institution: 'Educational Board', expiryDate }, expiryDays })
       });
       const data = await res.json();

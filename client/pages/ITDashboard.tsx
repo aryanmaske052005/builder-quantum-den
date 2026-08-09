@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 
 export default function ITDashboard() {
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const [documents, setDocuments] = useState<any[]>([]);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [systemHealth, setSystemHealth] = useState({ totalDocs: 0, pendingCount: 0, blockCount: 0 });
@@ -113,7 +113,7 @@ export default function ITDashboard() {
 
       const response = await fetch('/api/did/vc/issue', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id, 'x-user-role': user.role || '' },
+        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id, 'x-user-role': role || '' },
         body: JSON.stringify({ 
           holderUserId: targetUserId, 
           credentialType: 'SecurityClearanceCredential', 

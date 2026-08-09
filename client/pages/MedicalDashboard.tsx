@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Fingerprint } from 'lucide-react';
 
 export default function MedicalDashboard() {
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const [documents, setDocuments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -70,7 +70,7 @@ export default function MedicalDashboard() {
       const expiryDays = Math.max(1, Math.ceil((new Date(expiryDate).getTime() - Date.now()) / 86400000));
       const res = await fetch('/api/did/vc/issue', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id, 'x-user-role': user.role || '' },
+        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id, 'x-user-role': role || '' },
         body: JSON.stringify({ holderUserId: targetUserId, credentialType: 'MedicalCredential', claims: { docId, status: 'Verified', institution: 'Health Department', expiryDate }, expiryDays })
       });
       const data = await res.json();

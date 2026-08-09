@@ -25,6 +25,7 @@
     "@types/multer": "^2.0.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "jsbarcode": "^3.12.3",
     "multer": "^2.0.2",
     "mysql2": "^3.11.0",
     "zod": "^3.25.76"

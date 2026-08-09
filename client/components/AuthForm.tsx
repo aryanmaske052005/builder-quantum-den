@@ -84,6 +84,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ role, roleName, roleColor, r
         email,
         password,
         options: {
+          emailRedirectTo: window.location.origin + '/portal',
           data: {
             full_name: fullName,
             role: role

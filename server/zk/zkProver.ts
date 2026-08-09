@@ -1,48 +1,19 @@
 import crypto from "crypto";
 
-/**
- * Zero-Knowledge Proof Engine for Authen Ledger
- * 
- * This module implements a cryptographic proof simulation that mirrors the
- * Groth16 zk-SNARK protocol structure (bn128 curve, pairing-based proofs).
- * 
- * How it works:
- * - The prover (client-side) submits private inputs (DOB, PAN) to the server.
- * - The server computes the assertion (e.g., "user is >= 18") WITHOUT storing
- *   or returning the raw private inputs.
- * - A Groth16-structured proof object is generated with cryptographic randomness.
- * - The verifier can later check the proof's validity using the public signals only.
- * 
- * Privacy guarantee: The raw DOB / PAN values are used only for computation
- * and are never persisted, logged, or returned in the API response.
- * Only the boolean assertion and proof hash are exposed.
- * 
- * In a production deployment, this module would call compiled Circom .wasm
- * circuits via snarkjs. The interface and proof structure remain identical.
- */
 
-/**
- * Interface for Age Proof response
- */
-export interface AgeProofResult {
-  proof: any;
-  publicSignals: any;
-  isAdult: boolean;
-}
-
-/**
- * Interface for PAN Proof response
- */
 export interface PANProofResult {
   proof: any;
   publicSignals: any;
   isValid: boolean;
 }
 
-/**
- * Generates a cryptographically random Groth16-compatible proof structure.
- * Each proof is unique due to random elliptic curve point simulation.
- */
+export interface AgeProofResult {
+  proof: any;
+  publicSignals: any;
+  isAdult: boolean;
+}
+
+
 function generateGroth16Proof(): any {
   return {
     pi_a: [
@@ -69,7 +40,7 @@ function generateGroth16Proof(): any {
  * Computes current date, determines if user is 18+, and generates a
  * Zero-Knowledge proof that asserts the result WITHOUT revealing the DOB.
  * 
- * @param birthYear  User's birth year  (private input — not stored)
+ * @param birthYear  
  * @param birthMonth User's birth month (private input — not stored)
  * @param birthDay   User's birth day   (private input — not stored)
  * @returns Groth16 proof, public signals, and the boolean assertion

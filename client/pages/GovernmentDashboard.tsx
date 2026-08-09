@@ -151,7 +151,7 @@ function IssueVCDialog({ doc, onClose, onIssue, isLoading }: IssueVCDialogProps)
 // Main Government Dashboard
 // ──────────────────────────────────────────────
 export default function GovernmentDashboard() {
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const [documents, setDocuments] = useState<any[]>([]);
   const [allUsersKyc, setAllUsersKyc] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -298,7 +298,7 @@ export default function GovernmentDashboard() {
         headers: {
           "Content-Type": "application/json",
           "x-user-id": user.id,
-          "x-user-role": user.role || ""
+          "x-user-role": role || ""
         },
         body: JSON.stringify({
           holderUserId: targetUserId,

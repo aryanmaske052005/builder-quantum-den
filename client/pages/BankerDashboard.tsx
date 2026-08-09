@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Fingerprint } from 'lucide-react';
 
 export default function BankerDashboard() {
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const [documents, setDocuments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -86,7 +86,7 @@ export default function BankerDashboard() {
 
       const response = await fetch('/api/did/vc/issue', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id, 'x-user-role': user.role || '' },
+        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id, 'x-user-role': role || '' },
         body: JSON.stringify({ holderUserId: targetUserId, credentialType: 'BankingCredential', claims: { docId, status: 'Verified', institution: 'Central Bank', expiryDate }, expiryDays })
       });
       const data = await response.json();

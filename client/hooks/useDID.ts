@@ -6,7 +6,7 @@ export function useDID() {
   const [error, setError] = useState<string | null>(null);
   const [myDID, setMyDID] = useState<any>(null);
   const [myVCs, setMyVCs] = useState<any[]>([]);
-  const { user } = useAuth();
+  const { user, role } = useAuth();
 
   useEffect(() => {
     if (user) {
@@ -51,7 +51,7 @@ export function useDID() {
         headers: { 
           "Content-Type": "application/json",
           "x-user-id": user.id,
-          "x-user-role": user.role || 'user'
+          "x-user-role": role || 'user'
         }
       });
       const data = await res.json();

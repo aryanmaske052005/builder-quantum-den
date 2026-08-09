@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { generateDID, getDIDForUser, resolveDID, storeDIDInSupabase } from "../did/didService";
-import { getUserVCs, issueVerifiableCredential, revokeVC, storeVC, verifyVerifiableCredential } from "../did/vcService";
+import { getUserVCs, issueVerifiableCredential, revokeVC, storeVC, verifyVerifiableCredential, getVCById } from "../did/vcService";
 
 export const didRouter = Router();
 
@@ -113,5 +113,29 @@ didRouter.delete("/vc/:vcId/revoke", requireAuth, async (req: any, res) => {
   } catch (error: any) {
     console.error("Revoke VC Error:", error);
     res.status(500).json({ error: error.message || "Failed to revoke VC" });
+  }
+});
+
+// Public VC Auto-Download Endpoint (for QR code scans)
+didRouter.get("/vc/public/:vcId/download", async (req, res) => {
+  try {
+    const vcRecord = await getVCById(req.params.vcId);
+    if (!vcRecord || vcRecord.is_revoked) {
+      return res.status(404).send("Verifiable Credential not found or has been revoked.");
+    }
+
+    // Verify signature of the VC
+    const verification = await verifyVerifiableCredential(vcRecord.vc_json);
+    if (!verification.verified) {
+      return res.status(400).send("Verification failed: " + (verification.error || "Invalid signature"));
+    }
+
+    // Set download headers to auto-download on phone/browser
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Content-Disposition", `attachment; filename="vc_${vcRecord.credential_type}_${req.params.vcId.slice(0, 8)}.json"`);
+    res.send(JSON.stringify(vcRecord.vc_json, null, 2));
+  } catch (error: any) {
+    console.error("Public VC Download Error:", error);
+    res.status(500).send("Failed to retrieve or download credential: " + error.message);
   }
 });

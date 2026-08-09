@@ -9,6 +9,11 @@ export function DIDCard({ didData, vcs }: { didData: any, vcs: any[] }) {
   const [copied, setCopied] = useState(false);
   const { verifyVC } = useDID();
   const [verificationStatus, setVerificationStatus] = useState<Record<string, boolean>>({});
+  const [showQR, setShowQR] = useState<Record<string, boolean>>({});
+
+  const toggleQR = (vcId: string) => {
+    setShowQR(prev => ({ ...prev, [vcId]: !prev[vcId] }));
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(didData.did);
@@ -110,7 +115,39 @@ export function DIDCard({ didData, vcs }: { didData: any, vcs: any[] }) {
                     <Button variant="outline" size="sm" className="flex-1 text-xs h-8" onClick={() => downloadVC(vc)}>
                       <Download className="h-3 w-3 mr-1" /> JSON-LD
                     </Button>
+                    <Button variant="outline" size="sm" className="flex-1 text-xs h-8 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200" onClick={() => toggleQR(vc.id)}>
+                      <QrCode className="h-3.5 w-3.5 mr-1" /> Scan to Phone
+                    </Button>
                   </div>
+
+                  {showQR[vc.id] && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col items-center text-center space-y-3"
+                    >
+                      <p className="text-xs font-semibold text-slate-700">Scan with Google Lens or Camera</p>
+                      <div className="bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm flex items-center justify-center">
+                        <img 
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
+                            window.location.origin.includes('localhost') 
+                              ? `http://${window.location.hostname}:8080/api/did/vc/public/${vc.id}/download`
+                              : `${window.location.origin}/api/did/vc/public/${vc.id}/download`
+                          )}`} 
+                          alt="QR Code for public VC download"
+                          className="w-32 h-32"
+                        />
+                      </div>
+                      <p className="text-[10px] text-slate-500 max-w-[200px]">
+                        Opens the auto-verification link and downloads the signed JSON file directly to your phone.
+                      </p>
+                      {window.location.origin.includes('localhost') && (
+                        <p className="text-[9px] text-amber-600 bg-amber-50 p-1.5 rounded border border-amber-100 max-w-[200px] leading-tight">
+                          Note: Since you are running locally, access this dashboard via your local Network IP (e.g. <code>http://{window.location.hostname}:8080</code>) so your phone can scan and reach it over Wi-Fi.
+                        </p>
+                      )}
+                    </motion.div>
+                  )}
                 </div>
               ))}
             </div>

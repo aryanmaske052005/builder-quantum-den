@@ -171,3 +171,17 @@ export async function getUserVCs(userId: string) {
   if (error) throw error;
   return data;
 }
+
+/**
+ * Fetches a VC by its ID
+ */
+export async function getVCById(vcId: string) {
+  const { data, error } = await supabase
+    .from("verifiable_credentials")
+    .select("*")
+    .eq("id", vcId)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
